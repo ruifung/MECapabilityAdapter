@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "FCF",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "#ae2:smartcable"
+    },
+    "F": {
+      "item": "#appliedenergistics2:fluixCrystal"
+    }
+  },
+  "result": {
+    "item": "rf-capability-adapter:aecapabilityadapter"
+  }
+}

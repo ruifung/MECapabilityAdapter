@@ -1,0 +1,88 @@
+[
+  {
+    "name": "appliedenergistics2:fluixCrystal",
+    "ingredient": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalFluix"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.purified_fluix_crystal"
+      }
+    ]
+  },
+  {
+    "name": "ae2:smartcable",
+    "ingredient": [
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.black"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.blue"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.brown"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.cyan"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.fluix"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.gray"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.green"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.light_blue"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.light_gray"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.lime"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.magenta"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.orange"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.pink"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.purple"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.red"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.white"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.yellow"
+      }
+    ]
+  }
+]
