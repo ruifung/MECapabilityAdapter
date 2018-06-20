@@ -7,7 +7,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import me.yrf.mcmods.capadapter.CapabilityAdapterAEPlugin;
-import me.yrf.mcmods.capadapter.RegistryHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,6 +16,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -106,14 +106,18 @@ public class TileAECapAdapter extends TileEntity implements IGridHost, ITickable
     @Override
     public void validate() {
         super.validate();
-        node = CapabilityAdapterAEPlugin.INSTANCE.api.grid().createGridNode(gridProxy);
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            node = CapabilityAdapterAEPlugin.INSTANCE.api.grid().createGridNode(gridProxy);
+        }
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
-        node.destroy();
-        node = null;
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            node.destroy();
+            node = null;
+        }
     }
 
 
