@@ -61,6 +61,7 @@ public class TileAECapAdapter extends TileEntity implements IGridHost, ITickable
     }
 
     private Set<IGridNode> searchSet = new HashSet<>(6); //So it isn't constantly reallocated.
+
     public void updateConnectedNodes() {
         for (EnumFacing f : EnumFacing.VALUES) {
             BlockPos pos = getPos().offset(f);
@@ -77,7 +78,7 @@ public class TileAECapAdapter extends TileEntity implements IGridHost, ITickable
 
         //Purge potentially stale nodes.
         if (!capabilityNodes.isEmpty()) {
-            for (IGridNode n: capabilityNodes.keySet()) {
+            for (IGridNode n : capabilityNodes.keySet()) {
                 if (!searchSet.contains(n)) {
                     IGridConnection conn = capabilityNodes.remove(n);
                     if (node.getConnections().contains(conn)) {
@@ -121,7 +122,6 @@ public class TileAECapAdapter extends TileEntity implements IGridHost, ITickable
     }
 
 
-
     @Override
     public void onChunkUnload() {
         node.destroy();
@@ -131,6 +131,8 @@ public class TileAECapAdapter extends TileEntity implements IGridHost, ITickable
     @Override
     public void onLoad() {
         node.updateState();
+        this.getWorld()
+                .notifyNeighborsOfStateChange(this.pos, this.blockType, false);
     }
 
     @Override
