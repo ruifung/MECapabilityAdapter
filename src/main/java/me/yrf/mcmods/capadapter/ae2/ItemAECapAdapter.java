@@ -9,7 +9,7 @@ public class ItemAECapAdapter extends ItemBlock {
     public ItemAECapAdapter(String unlocalizedName, Block block) {
         super(block);
         setCreativeTab(CreativeTabs.MISC);
-        setUnlocalizedName(unlocalizedName);
+        setTranslationKey(unlocalizedName);
         setNoRepair();
         setHasSubtypes(false);
         setRegistryName(CapabilityAdapter.MODID, "aecapabilityadapter");

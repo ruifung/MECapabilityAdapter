@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BlockAECapAdapter extends BlockContainer {
     public BlockAECapAdapter(String unlocalizedName) {
         super(Material.PISTON, MapColor.STONE);
-        setUnlocalizedName(unlocalizedName);
+        setTranslationKey(unlocalizedName);
         setHardness(1f);
         setRegistryName("aecapabilityadapter");
     }
