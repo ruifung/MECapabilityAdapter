@@ -1,0 +1,5 @@
+{
+  "conditions": {
+    "target_item_registered": "me.yrf.mcmods.capadapter.recipes.ItemConditional"
+  }
+}

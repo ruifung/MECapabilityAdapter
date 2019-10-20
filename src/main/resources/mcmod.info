@@ -1,19 +1,27 @@
 [
-{
-  "modid": "rf-capability-adapter",
-  "name": "Capability Adapter",
-  "description": "A mod that adds capability adapters to allow certain things to work with capability proxies.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["rfctksSparkle"],
-  "credits": "The Forge and FML guys, for making this forge.",
-  "logoFile": "",
-  "screenshots": [],
-  "requiredMods": [
-    "Forge",
-    "appliedenergistics2"
-  ]
-}
+  {
+    "modid": "rf-capability-adapter",
+    "name": "Capability Adapter",
+    "description": "A mod that adds capability adapters to allow certain things to work with capability proxies.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://www.curseforge.com/minecraft/mc-mods/capability-adapter",
+    "updateUrl": "",
+    "updateJSON": "https://raw.githubusercontent.com/ruifung/MECapabilityAdapter/master/version.json",
+    "authorList": [
+      "rfctksSparkle"
+    ],
+    "credits": "The Forge and FML guys, for making this forge.",
+    "logoFile": "",
+    "screenshots": [],
+    "useDependencyInformation": true,
+    "requiredMods": [
+      "forge",
+      "appliedenergistics2",
+      "forgelin"
+    ],
+    "dependencies": [
+      "appliedenergistics2"
+    ]
+  }
 ]

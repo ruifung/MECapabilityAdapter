@@ -1,4 +1,4 @@
-package me.yrf.mcmods.capadapter.ae2;
+package me.yrf.mcmods.capadapter.capabilities;
 
 import appeng.api.networking.IGridNode;
 import me.yrf.mcmods.capadapter.capabilities.IProxyCapability;

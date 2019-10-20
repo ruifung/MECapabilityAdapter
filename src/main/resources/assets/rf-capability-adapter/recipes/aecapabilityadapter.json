@@ -1,19 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "III",
+    "IFI",
     "FCF",
-    "III"
+    "IFI"
   ],
   "key": {
     "I": {
       "item": "minecraft:iron_ingot"
     },
     "C": {
-      "item": "#ae2:smartcable"
+      "type": "appliedenergistics2:part",
+      "part": "cable_dense_covered"
     },
     "F": {
-      "item": "#appliedenergistics2:fluixCrystal"
+      "item": "#ae2:fluixCrystal"
     }
   },
   "result": {

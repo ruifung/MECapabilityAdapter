@@ -7,21 +7,23 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.0.9'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50"
     }
 }
 
-
-apply plugin: 'scala'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'idea'
 apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'kotlin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
-version = "1.0.2"
-group = "me.yrf.mcmods.capadapter" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.1.0"
+group = "me.yrf.mcmods" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+
 archivesBaseName = "capabilityadapter"
 
+ext.kotlin_version = '1.3.50'
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
@@ -57,35 +59,24 @@ repositories {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
     }
+
+    jcenter()
+    maven {
+        url "http://maven.shadowfacts.net/"
+    }
 }
 
+configurations {
+    embed
+
+    compile.extendsFrom embed
+}
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
-    // except that these dependencies get remapped to your current MCP mappings
-    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    compile 'net.shadowfacts:Forgelin:1.8.4'
     deobfCompile 'appeng:appliedenergistics2:rv6-stable-6'
     compileOnly 'appeng:appliedenergistics2:rv6-stable-6:api'
     compileOnly "li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
-
 }
 
 processResources {
@@ -96,7 +87,13 @@ processResources {
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.allSource.srcDirs) {
+        include 'me/yrf/mcmods/capadapter/Constants.java'
+
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
@@ -105,4 +102,43 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+task generateMetaFiles {
+    // Code for execution after the whole buildscript was parsed and loaded
+    doLast {
+        // Clear the dependencyMeta directory since we don't want old dependencies to still be listed in there
+        file("${buildDir}/dependencyMeta/").deleteDir()
+        configurations.embed.resolvedConfiguration.resolvedArtifacts.each {
+            // Create a meta file for each dependency in a specified directory
+            def metaFile = file("${buildDir}/dependencyMeta/${it.file.name}.meta")
+            metaFile.parentFile.mkdirs()
+            // Use the Gradle notation provided by the API ('group:artifact:version') for the meta file...
+            def artifactRef = it.moduleVersion.toString()
+            // ...and append the classifier if present
+            if (it.classifier != null) {
+                artifactRef += ":${it.classifier}"
+            }
+            // Write the artifact information to the meta file, to be used by the
+            metaFile.text = "Maven-Artifact: $artifactRef"
+        }
+    }
+}
+
+// Use the standard JAR task as container for the main jar and the contained dependencies (from the embed configuration)
+jar {
+    into('/META-INF/libraries/') {
+        // Add all of the dependency JARs to the main JAR for later extraction
+        from configurations.embed
+        // Also include all dependency meta files
+        from "${buildDir}/dependencyMeta/"
+    }
+    manifest {
+        // The crucial manifest attribute: Make Forge extract the contained JARs
+        attributes 'Maven-Artifact': "com.yrf.mcmods:capabilityadapter:${project.version}"
+        if (!configurations.embed.isEmpty())
+            attributes 'ContainedDeps': configurations.embed.collect { it.name }.join(' ')
+    }
+    // Only run the main jar task after the meta files were built
+    dependsOn generateMetaFiles
 }

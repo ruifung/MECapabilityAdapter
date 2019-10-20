@@ -1,0 +1,10 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/capability-adapter",
+  "1.12.2": {
+    "1.1.0": "Fixes! ME Adapters now save ownership info. Also, bus version of the ME adapter."
+  },
+  "promos": {
+    "1.12.2-latest": "1.1.0",
+    "1.12.2-recommended": "1.1.0"
+  }
+}

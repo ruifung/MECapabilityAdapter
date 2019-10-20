@@ -1,0 +1,32 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"front": "rf-capability-adapter:aecapproxy"
+	},
+	"elements": [
+		{
+			"from": [2, 2, 0],
+			"to": [14, 14, 2],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#front"},
+				"east": {"uv": [14, 1, 16, 15], "texture": "#front"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#front"},
+				"west": {"uv": [0, 2, 2, 15], "texture": "#front"},
+				"up": {"uv": [14, 1, 16, 15], "rotation": 270, "texture": "#front"},
+				"down": {"uv": [0, 1, 2, 15], "rotation": 270, "texture": "#front"}
+			}
+		},
+		{
+			"from": [5, 5, 2],
+			"to": [11, 11, 3],
+			"faces": {
+				"north": {"uv": [4, 4, 13, 13], "texture": "#missing"},
+				"east": {"uv": [12, 3, 13, 13], "texture": "#front"},
+				"south": {"uv": [4, 4, 12, 12], "texture": "#front"},
+				"west": {"uv": [3, 3, 4, 13], "texture": "#front"},
+				"up": {"uv": [4, 3, 12, 4], "texture": "#front"},
+				"down": {"uv": [4, 12, 12, 13], "texture": "#front"}
+			}
+		}
+	]
+}
