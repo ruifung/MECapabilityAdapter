@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 
-sealed class CommonProxy {
+open class CommonProxy {
     open fun preinit(event: FMLPreInitializationEvent) {
         MinecraftForge.EVENT_BUS.register(this)
         Capabilities.register()
