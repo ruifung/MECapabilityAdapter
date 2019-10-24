@@ -1,3 +1,11 @@
+/*
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
+ */
+
 package me.yrf.mcmods.capadapter
 
 import net.minecraft.util.ResourceLocation
@@ -13,7 +21,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 object CapabilityAdapter {
     const val MODID = "rf-capability-adapter"
 
-    @SidedProxy(modId = CapabilityAdapter.MODID,
+    @SidedProxy(modId = MODID,
             clientSide = "me.yrf.mcmods.capadapter.ClientProxy",
             serverSide = "me.yrf.mcmods.capadapter.CommonProxy")
     lateinit var proxy: CommonProxy

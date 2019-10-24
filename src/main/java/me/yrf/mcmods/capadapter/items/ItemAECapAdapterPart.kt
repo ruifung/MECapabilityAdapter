@@ -1,8 +1,14 @@
+/*
+ * This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details.
+ */
+
 package me.yrf.mcmods.capadapter.items
 
-import appeng.api.parts.IPart
 import appeng.api.parts.IPartItem
-import me.yrf.mcmods.capadapter.CapabilityAdapter
 import me.yrf.mcmods.capadapter.ae2.AE2Plugin
 import me.yrf.mcmods.capadapter.ae2.partHelper
 import me.yrf.mcmods.capadapter.modResource
@@ -27,7 +33,6 @@ object ItemAECapAdapterPart : Item(), IPartItem<PartAECapAdapter> {
         maxDamage = 0
         maxStackSize = 64
     }
-
 
 
     override fun createPartFromItemStack(`is`: ItemStack): PartAECapAdapter? {
