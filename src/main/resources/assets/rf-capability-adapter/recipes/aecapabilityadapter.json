@@ -10,8 +10,8 @@
       "item": "minecraft:iron_ingot"
     },
     "C": {
-      "type": "appliedenergistics2:part",
-      "part": "cable_dense_covered"
+      //This uses an ME Interface instead of a dense cable so it's craftable with or without channels enabled.
+      "type": "appliedenergistics2:interface",
     },
     "F": {
       "item": "#ae2:fluixCrystal"
