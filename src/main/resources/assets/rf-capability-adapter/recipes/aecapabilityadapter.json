@@ -10,7 +10,7 @@
       "item": "minecraft:iron_ingot"
     },
     "C": {
-      "type": "appliedenergistics2:interface",
+      "item": "appliedenergistics2:interface"
     },
     "F": {
       "item": "#ae2:fluixCrystal"
