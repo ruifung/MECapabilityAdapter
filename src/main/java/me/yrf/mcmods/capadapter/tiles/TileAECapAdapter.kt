@@ -168,8 +168,17 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
         if (Platform.isServer) {
             node.updateState()
             remoteLinkNode.updateState()
-            this.getWorld()
-                    .notifyNeighborsOfStateChange(this.pos, this.blockType, false)
+            // loop over all sides and only notify those which are not tunnels, fixes a rare crash
+            var updated = false;
+            for (facing in EnumFacing.values()) {
+                if (this.getWorld().getBlockState(pos.offset(facing)).block.registryName.toString() == "compactmachines3:tunnel") {
+                    this.getWorld().notifyNeighborsOfStateExcept(this.pos, this.blockType, facing);
+                    updated = true;
+                }
+            }
+            if (!updated) {
+                this.getWorld().notifyNeighborsOfStateChange(this.pos, this.blockType, false)
+            }
         }
     }
 
