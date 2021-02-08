@@ -10,8 +10,7 @@
       "item": "minecraft:iron_ingot"
     },
     "C": {
-      "type": "appliedenergistics2:part",
-      "part": "cable_dense_covered"
+      "item": "appliedenergistics2:interface"
     },
     "F": {
       "item": "#ae2:fluixCrystal"
