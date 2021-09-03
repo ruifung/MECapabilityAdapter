@@ -65,11 +65,12 @@ class PartAECapAdapter : IPart by DefaultPartDelegate, ILocationAwareGridHost, I
         this.owner
                 ?.let { AE2Plugin.api.registries.players().getID(it) }
                 ?.let { node.playerID = it }
-        AE2Plugin.api.grid.createGridConnection(this.node, node)
 
         this.host.markForSave()
         node
     }
+
+    var intExtConnection: IGridConnection? = null
 
     /**
      * This is really just used to hold the owner until the nodes are initialized.
@@ -98,6 +99,7 @@ class PartAECapAdapter : IPart by DefaultPartDelegate, ILocationAwareGridHost, I
 
     override fun removeFromWorld() {
         if (Platform.isServer) {
+            this.intExtConnection = null
             this.node.destroy()
             this.remoteLinkNode.destroy()
         }
@@ -105,6 +107,7 @@ class PartAECapAdapter : IPart by DefaultPartDelegate, ILocationAwareGridHost, I
 
     override fun addToWorld() {
         if (Platform.isServer) {
+            this.connectIntExtNodes()
             this.node.updateState()
             this.remoteLinkNode.updateState()
         }
@@ -148,6 +151,8 @@ class PartAECapAdapter : IPart by DefaultPartDelegate, ILocationAwareGridHost, I
     }
 
     private fun updateConnectedNode() {
+        this.connectIntExtNodes()
+
         val world = this.te.world
         val pos = this.te.pos
                 .offset(this.partLocation.facing)
@@ -230,6 +235,15 @@ class PartAECapAdapter : IPart by DefaultPartDelegate, ILocationAwareGridHost, I
 //    override fun writeToStream(data: ByteBuf) {
 //        data.writeInt(clientFlags)
 //    }
+
+    private fun connectIntExtNodes() {
+        intExtConnection =  try {
+            intExtConnection ?: AE2Plugin.api.grid.createGridConnection(this.node, node)
+        } catch (ex: FailedConnectionException) {
+            securityBreak()
+            null
+        }
+    }
 
     companion object {
         @CapabilityInject(IAEGridProxyCapability::class)
