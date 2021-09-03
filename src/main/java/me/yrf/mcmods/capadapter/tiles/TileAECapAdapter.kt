@@ -58,10 +58,10 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
         val node = AE2Plugin.api.grid.createGridNode(linkGridBlock)
         if (::nbt.isInitialized)
             node.loadFromNBT("intNode", nbt)
-
-        AE2Plugin.api.grid.createGridConnection(this.node, node)
         node
     }
+    var intExtConnection: IGridConnection? = null
+
     lateinit var nbt: NBTTagCompound
     private val cap = IAEGridProxyCapability { this.remoteLinkNode }
 
@@ -101,12 +101,24 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
     override fun invalidate() {
         super.invalidate()
         if (Platform.isServer) {
+            this.intExtConnection = null
             this.node.destroy()
             this.remoteLinkNode.destroy()
         }
     }
 
+    private fun connectIntExtNodes() {
+        intExtConnection =  try {
+            intExtConnection ?: AE2Plugin.api.grid.createGridConnection(this.node, node)
+        } catch (ex: FailedConnectionException) {
+            securityBreak()
+            null
+        }
+    }
+
     private fun updateConnectedNodes() {
+        connectIntExtNodes()
+
         var changes = false
         for (f in EnumFacing.VALUES) {
             val pos = getPos().offset(f)
@@ -166,6 +178,7 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
 
     override fun onLoad() {
         if (Platform.isServer) {
+            connectIntExtNodes()
             node.updateState()
             remoteLinkNode.updateState()
             // loop over all sides and only notify those which are not tunnels, fixes a rare crash

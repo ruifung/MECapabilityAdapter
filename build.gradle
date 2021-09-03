@@ -49,15 +49,19 @@ repositories {
         url = "http://dvs1.progwml6.com/files/maven"
     }
     maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "modmaven.k-4u.nl"
+        name = "Local"
+        url = "dependencies"
     }
     maven { url = "http://maven.cil.li/" }
 
     maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
+        name = "CurseMaven"
+        url = "https://cursemaven.com"
+    }
+
+    maven {
+        name "Modmaven"
+        url "https://modmaven.dev/"
     }
 
     jcenter()
@@ -74,9 +78,10 @@ configurations {
 
 dependencies {
     compile 'net.shadowfacts:Forgelin:1.8.4'
-    deobfCompile 'appeng:appliedenergistics2:rv6-stable-7'
+    deobfCompile 'curse.maven:ae2-applied-energistics-2:2747063'
     compileOnly 'appeng:appliedenergistics2:rv6-stable-7:api'
     compileOnly "li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 processResources {
@@ -142,4 +147,14 @@ jar {
     }
     // Only run the main jar task after the meta files were built
     dependsOn generateMetaFiles
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
