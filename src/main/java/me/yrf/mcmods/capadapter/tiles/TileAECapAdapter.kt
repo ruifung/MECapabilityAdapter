@@ -109,7 +109,7 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
 
     private fun connectIntExtNodes() {
         intExtConnection =  try {
-            intExtConnection ?: AE2Plugin.api.grid.createGridConnection(this.node, node)
+            intExtConnection ?: AE2Plugin.api.grid.createGridConnection(this.node, this.remoteLinkNode)
         } catch (ex: FailedConnectionException) {
             securityBreak()
             null
