@@ -23,7 +23,13 @@ import net.minecraft.util.EnumBlockRenderType
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-object BlockAECapAdapter : BlockContainer(Material.PISTON, MapColor.STONE) {
+object AECapAdapterMaterial: Material(MapColor.STONE) {
+    init {
+        setImmovableMobility()
+    }
+}
+
+object BlockAECapAdapter : BlockContainer(AECapAdapterMaterial, MapColor.STONE) {
     init {
         translationKey = "aecapabilityadapter"
         setHardness(1f)
