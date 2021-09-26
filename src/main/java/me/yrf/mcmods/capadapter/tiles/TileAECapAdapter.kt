@@ -19,6 +19,7 @@ import appeng.api.networking.ticking.TickingRequest
 import appeng.api.util.AECableType
 import appeng.api.util.AEPartLocation
 import appeng.api.util.DimensionalCoord
+import me.yrf.mcmods.capadapter.CapabilityAdapter
 import me.yrf.mcmods.capadapter.ae2.AE2Plugin
 import me.yrf.mcmods.capadapter.ae2.AEGridBlock
 import me.yrf.mcmods.capadapter.ae2.ILocationAwareGridHost
@@ -108,7 +109,7 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
     }
 
     private fun connectIntExtNodes() {
-        intExtConnection =  try {
+        intExtConnection = try {
             intExtConnection ?: AE2Plugin.api.grid.createGridConnection(this.node, this.remoteLinkNode)
         } catch (ex: FailedConnectionException) {
             securityBreak()
@@ -116,7 +117,7 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
         }
     }
 
-    private fun updateConnectedNodes() {
+    private fun updateConnectedNodes(): Boolean {
         connectIntExtNodes()
 
         var changes = false
@@ -125,11 +126,17 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
             if (!world.isBlockLoaded(pos))
                 continue
             val te = world.getTileEntity(pos)
-            if (te != null && te.hasCapability(GridProxyCapability, f.opposite) && te !is IGridHost) {
-                val remoteCap = te.getCapability(GridProxyCapability, f.opposite)
-                if (remoteCap != null && remoteCap.proxiedObject != null && remoteCap.proxiedObject !== remoteLinkNode) {
-                    searchSet.add(remoteCap.proxiedObject)
+            try {
+                if (te != null && te.hasCapability(GridProxyCapability, f.opposite) && te !is IGridHost) {
+                    val remoteCap = te.getCapability(GridProxyCapability, f.opposite)
+                    if (remoteCap != null && remoteCap.proxiedObject != null && remoteCap.proxiedObject !== remoteLinkNode) {
+                        searchSet.add(remoteCap.proxiedObject)
+                    }
                 }
+            } catch (ex: Exception) {
+                // Do nothing here. Likely CM hasn't loaded yet. This will be checked again when AE2 ticks it.
+                CapabilityAdapter.logger.warn("NPE thrown while updating CapabilityAdapter connections.", ex)
+                return false
             }
         }
 
@@ -166,6 +173,7 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
         }
 
         searchSet.clear()
+        return true
     }
 
     override fun onChunkUnload() {
@@ -211,8 +219,8 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
     override fun tickingRequest(node: IGridNode, ticksSinceLastCall: Int): TickRateModulation {
         if (node != this.node)
             return TickRateModulation.SAME
-        updateConnectedNodes()
-        return TickRateModulation.IDLE
+
+        return if (updateConnectedNodes()) TickRateModulation.IDLE else TickRateModulation.FASTER
     }
 
     override fun getTickingRequest(node: IGridNode): TickingRequest =

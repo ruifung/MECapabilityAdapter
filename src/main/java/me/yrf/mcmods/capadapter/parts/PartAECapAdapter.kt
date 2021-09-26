@@ -20,6 +20,7 @@ import appeng.api.parts.*
 import appeng.api.util.AECableType
 import appeng.api.util.AEPartLocation
 import appeng.api.util.DimensionalCoord
+import me.yrf.mcmods.capadapter.CapabilityAdapter
 import me.yrf.mcmods.capadapter.ae2.*
 import me.yrf.mcmods.capadapter.capabilities.IAEGridProxyCapability
 import me.yrf.mcmods.capadapter.items.ItemAECapAdapterPart
@@ -150,7 +151,7 @@ class PartAECapAdapter : IPart by DefaultPartDelegate, ILocationAwareGridHost, I
         boxes.addBox(5.0, 5.0, 14.0, 11.0, 11.0, 13.0)
     }
 
-    private fun updateConnectedNode() {
+    private fun updateConnectedNode(): Boolean {
         this.connectIntExtNodes()
 
         val world = this.te.world
@@ -162,11 +163,17 @@ class PartAECapAdapter : IPart by DefaultPartDelegate, ILocationAwareGridHost, I
 
         if (world.isBlockLoaded(pos)) {
             val target = world.getTileEntity(pos)
-            if (target?.hasCapability(GridProxyCapability, capFacing) == true && target !is IGridHost) {
-                val remoteCap = target.getCapability(GridProxyCapability, capFacing)
-                if (remoteCap?.proxiedObject != null && remoteCap.proxiedObject !== this.remoteLinkNode) {
-                    foundNode = remoteCap.proxiedObject
+            try {
+                if (target?.hasCapability(GridProxyCapability, capFacing) == true && target !is IGridHost) {
+                    val remoteCap = target.getCapability(GridProxyCapability, capFacing)
+                    if (remoteCap?.proxiedObject != null && remoteCap.proxiedObject !== this.remoteLinkNode) {
+                        foundNode = remoteCap.proxiedObject
+                    }
                 }
+            } catch (ex: Exception) {
+                // Do nothing here. Likely CM hasn't loaded yet. This will be checked again when AE2 ticks it.
+                CapabilityAdapter.logger.warn("NPE thrown while updating CapabilityAdapter connections.", ex)
+                return false
             }
         }
 
@@ -186,6 +193,7 @@ class PartAECapAdapter : IPart by DefaultPartDelegate, ILocationAwareGridHost, I
             this.remoteLinkNode.updateState()
             this.host.markForSave()
         }
+        return true
     }
 
     override fun getGridNode(): IGridNode? {
@@ -204,8 +212,8 @@ class PartAECapAdapter : IPart by DefaultPartDelegate, ILocationAwareGridHost, I
 
         if (node != this.node)
             return TickRateModulation.SLEEP
-        updateConnectedNode()
-        return TickRateModulation.IDLE
+
+        return if (updateConnectedNode()) TickRateModulation.IDLE else TickRateModulation.FASTER
     }
 
     override fun getTickingRequest(node: IGridNode): TickingRequest =
