@@ -72,6 +72,7 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
         get() = DimensionalCoord(this)
 
     private val searchSet = HashSet<IGridNode>(6) //So it isn't constantly reallocated.
+    private var initialNotify = false
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return capability === GridProxyCapability || super.hasCapability(capability, facing)
@@ -189,16 +190,11 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
             connectIntExtNodes()
             node.updateState()
             remoteLinkNode.updateState()
-            // loop over all sides and only notify those which are not tunnels, fixes a rare crash
-            var updated = false;
-            for (facing in EnumFacing.values()) {
-                if (this.getWorld().getBlockState(pos.offset(facing)).block.registryName.toString() == "compactmachines3:tunnel") {
-                    this.getWorld().notifyNeighborsOfStateExcept(this.pos, this.blockType, facing);
-                    updated = true;
-                }
-            }
-            if (!updated) {
+            try {
                 this.getWorld().notifyNeighborsOfStateChange(this.pos, this.blockType, false)
+                this.initialNotify = true
+            } catch (ex: Exception) {
+                // Do nothing.
             }
         }
     }
@@ -219,6 +215,16 @@ class TileAECapAdapter : TileEntity(), ILocationAwareGridHost, IGridTickable {
     override fun tickingRequest(node: IGridNode, ticksSinceLastCall: Int): TickRateModulation {
         if (node != this.node)
             return TickRateModulation.SAME
+
+        if (!initialNotify) {
+            try {
+                this.getWorld().notifyNeighborsOfStateChange(this.pos, this.blockType, false)
+                this.initialNotify = true
+            } catch (ex: Exception) {
+                CapabilityAdapter.logger.warn("Error doing initial notify.", ex)
+                // Do nothing.
+            }
+        }
 
         return if (updateConnectedNodes()) TickRateModulation.IDLE else TickRateModulation.FASTER
     }
